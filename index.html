@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FORGE V.01</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forge: #D4692A;
+    --forge-dim: #8B3F15;
+    --forge-glow: rgba(212, 105, 42, 0.15);
+    --forge-border: rgba(212, 105, 42, 0.3);
+    --bg: #0A0A0A;
+    --bg-card: #111111;
+    --bg-input: #0D0D0D;
+    --text: #E8E8E8;
+    --text-dim: #666666;
+    --text-muted: #333333;
+    --border: #1A1A1A;
+    --border-bright: #2A2A2A;
+    --white: #FFFFFF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.08em;
+    color: var(--forge);
+    line-height: 1;
+  }
+
+  .logo-version {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  .header-tagline {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .api-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+
+  .api-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-muted);
+  }
+
+  .api-dot.active {
+    background: var(--forge);
+    box-shadow: 0 0 6px var(--forge);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* API KEY SETUP */
+  .api-setup {
+    margin: 48px 48px 0;
+    border: 1px solid var(--border-bright);
+    background: var(--bg-card);
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .api-setup-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .api-input {
+    flex: 1;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 10px 16px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .api-input:focus { border-color: var(--forge-dim); }
+
+  .btn-save-api {
+    background: var(--forge);
+    color: var(--bg);
+    border: none;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn-save-api:hover { background: #E8752E; }
+
+  /* MAIN LAYOUT */
+  .main {
+    padding: 48px;
+    max-width: 1400px;
+  }
+
+  /* INPUT SECTION */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .section-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--text-muted);
+    line-height: 1;
+    letter-spacing: 0.05em;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.12em;
+    color: var(--text);
+  }
+
+  .section-sub {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-left: auto;
+  }
+
+  /* INPUT GRID */
+  .input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+
+  .input-block {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 24px 28px;
+    transition: border-color 0.2s;
+  }
+
+  .input-block:hover { border-color: var(--border-bright); }
+  .input-block.full-width { grid-column: 1 / -1; }
+
+  .input-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .input-label-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--forge);
+  }
+
+  .input-badge {
+    font-size: 9px;
+    padding: 2px 8px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .badge-required {
+    background: rgba(212, 105, 42, 0.15);
+    color: var(--forge);
+    border: 1px solid var(--forge-border);
+  }
+
+  .badge-optional {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border-bright);
+  }
+
+  .input-field {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+
+  .input-field:focus { border-color: var(--forge-dim); }
+
+  .input-field::placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* IMAGE UPLOAD — MULTI */
+  .upload-zone {
+    border: 1px dashed var(--border-bright);
+    background: var(--bg-input);
+    padding: 28px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    margin-bottom: 10px;
+  }
+
+  .upload-zone:hover {
+    border-color: var(--forge-dim);
+    background: var(--forge-glow);
+  }
+
+  .upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .upload-icon {
+    font-size: 22px;
+    margin-bottom: 8px;
+    opacity: 0.3;
+  }
+
+  .upload-text {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+
+  /* IMAGE THUMBNAILS */
+  .image-thumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .image-thumb {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    border: 1px solid var(--border-bright);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .image-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .image-thumb-del {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: rgba(0,0,0,0.8);
+    border: none;
+    color: var(--text-dim);
+    font-size: 10px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    line-height: 1;
+  }
+
+  .image-thumb-del:hover { color: var(--forge); background: rgba(0,0,0,0.95); }
+
+  .image-count-badge {
+    font-size: 10px;
+    color: var(--forge);
+    letter-spacing: 0.08em;
+    margin-top: 8px;
+  }
+
+  /* URL MULTI */
+  .url-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .url-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .url-row .input-field {
+    flex: 1;
+    margin: 0;
+  }
+
+  .btn-url-del {
+    background: transparent;
+    border: 1px solid var(--border-bright);
+    color: var(--text-muted);
+    width: 32px;
+    height: 38px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-url-del:hover { border-color: var(--forge-dim); color: var(--forge); }
+
+  .btn-url-add {
+    background: transparent;
+    border: 1px dashed var(--border-bright);
+    color: var(--text-dim);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    margin-top: 4px;
+    width: 100%;
+  }
+
+  .btn-url-add:hover { border-color: var(--forge-dim); color: var(--forge); }
+
+  /* EXECUTE BUTTON */
+  .execute-bar {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 2px;
+  }
+
+  .execute-info {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .execute-info span {
+    color: var(--forge);
+  }
+
+  .btn-execute {
+    background: var(--forge);
+    color: var(--bg);
+    border: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.15em;
+    padding: 14px 40px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .btn-execute:hover {
+    background: #E8752E;
+    transform: translateY(-1px);
+  }
+
+  .btn-execute:disabled {
+    background: var(--text-muted);
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-arrow {
+    font-size: 18px;
+    transition: transform 0.2s;
+  }
+
+  .btn-execute:hover .btn-arrow { transform: translateX(4px); }
+
+  /* PHASE DIVIDER */
+  .phase-divider {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin: 56px 0 40px;
+  }
+
+  .phase-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .phase-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--forge);
+    padding: 6px 16px;
+    border: 1px solid var(--forge-border);
+    background: rgba(212, 105, 42, 0.05);
+  }
+
+  /* PHASE BLOCKS */
+  .phase-block {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    margin-bottom: 2px;
+    display: none;
+  }
+
+  .phase-block.visible { display: block; }
+
+  .phase-block-header {
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .phase-tag {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--forge);
+    padding: 4px 10px;
+    border: 1px solid var(--forge-border);
+  }
+
+  .phase-block-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .phase-block-sub {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-left: auto;
+    letter-spacing: 0.08em;
+  }
+
+  .phase-block-body {
+    padding: 28px;
+  }
+
+  /* DNA OUTPUT */
+  .dna-output {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--text);
+    white-space: pre-wrap;
+    min-height: 120px;
+  }
+
+  .dna-edit-area {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--forge-dim);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    padding: 20px;
+    outline: none;
+    resize: vertical;
+    min-height: 200px;
+    display: none;
+  }
+
+  .dna-edit-area.visible { display: block; }
+
+  /* ACTION BUTTONS */
+  .action-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn-action {
+    background: transparent;
+    border: 1px solid var(--border-bright);
+    color: var(--text-dim);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-action:hover {
+    border-color: var(--text-dim);
+    color: var(--text);
+  }
+
+  .btn-action.primary {
+    background: var(--forge);
+    border-color: var(--forge);
+    color: var(--bg);
+  }
+
+  .btn-action.primary:hover {
+    background: #E8752E;
+    border-color: #E8752E;
+  }
+
+  .btn-action.active {
+    border-color: var(--forge-dim);
+    color: var(--forge);
+  }
+
+  /* SHOT BUTTONS */
+  .shot-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-bottom: 20px;
+  }
+
+  .shot-btn-block {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .shot-btn-block:hover {
+    border-color: var(--forge-dim);
+    background: var(--forge-glow);
+  }
+
+  .shot-btn-block.loading {
+    border-color: var(--forge-dim);
+    pointer-events: none;
+  }
+
+  .shot-btn-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.1em;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .shot-btn-count {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .shot-count-input {
+    background: var(--bg-card);
+    border: 1px solid var(--border-bright);
+    color: var(--forge);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    width: 40px;
+    padding: 3px 6px;
+    text-align: center;
+    outline: none;
+  }
+
+  .shot-count-input:focus { border-color: var(--forge-dim); }
+
+  .shot-execute {
+    margin-top: 12px;
+    background: transparent;
+    border: 1px solid var(--border-bright);
+    color: var(--text-dim);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    text-transform: uppercase;
+  }
+
+  .shot-execute:hover {
+    border-color: var(--forge);
+    color: var(--forge);
+  }
+
+  /* PROMPT OUTPUT */
+  .prompt-output-block {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    margin-top: 16px;
+    display: none;
+  }
+
+  .prompt-output-block.visible { display: block; }
+
+  .prompt-output-header {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .prompt-output-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--forge);
+  }
+
+  .prompt-output-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .btn-tiny {
+    background: transparent;
+    border: 1px solid var(--border-bright);
+    color: var(--text-dim);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .btn-tiny:hover {
+    border-color: var(--forge-dim);
+    color: var(--forge);
+  }
+
+  .prompt-output-body {
+    padding: 20px;
+  }
+
+  .prompt-item {
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .prompt-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .prompt-item:first-child { padding-top: 0; }
+
+  .prompt-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--forge);
+    line-height: 1;
+    min-width: 28px;
+    opacity: 0.6;
+  }
+
+  .prompt-content {
+    flex: 1;
+  }
+
+  .prompt-label {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .prompt-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .btn-copy-prompt {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 9px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  .btn-copy-prompt:hover {
+    border-color: var(--forge-dim);
+    color: var(--forge);
+  }
+
+  /* VIDEO BRIEF OUTPUT */
+  .brief-output {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--text);
+    white-space: pre-wrap;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    padding: 24px;
+    min-height: 160px;
+  }
+
+  /* REFINE INPUT */
+  .refine-block {
+    margin-top: 12px;
+    display: none;
+  }
+
+  .refine-block.visible { display: block; }
+
+  .refine-input {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--forge-dim);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 14px 18px;
+    outline: none;
+    resize: none;
+    min-height: 80px;
+  }
+
+  .refine-input::placeholder { color: var(--text-muted); font-style: italic; }
+
+  /* LOADING */
+  .loading-bar {
+    height: 2px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+    margin: 16px 0;
+    display: none;
+  }
+
+  .loading-bar.visible { display: block; }
+
+  .loading-bar::after {
+    content: '';
+    position: absolute;
+    left: -50%;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--forge), transparent);
+    animation: loading 1.2s infinite;
+  }
+
+  @keyframes loading {
+    0% { left: -50%; }
+    100% { left: 100%; }
+  }
+
+  .loading-text {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    display: none;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .loading-text.visible { display: flex; }
+
+  /* SIGNAL HINT */
+  .signal-hint {
+    margin-top: 16px;
+    padding: 16px 20px;
+    border: 1px solid var(--border);
+    background: rgba(212, 105, 42, 0.03);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .signal-hint-icon {
+    font-size: 16px;
+    opacity: 0.5;
+  }
+
+  .signal-hint-text {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    line-height: 1.6;
+  }
+
+  .signal-hint-text strong {
+    color: var(--forge);
+    font-weight: normal;
+  }
+
+  /* FADE IN */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in { animation: fadeIn 0.3s ease forwards; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border-bright); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--forge-dim); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    right: 48px;
+    background: var(--bg-card);
+    border: 1px solid var(--forge-border);
+    color: var(--forge);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 12px 20px;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 999;
+    pointer-events: none;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* SOUL ID WARNING */
+  .soul-warning {
+    background: rgba(212, 105, 42, 0.05);
+    border: 1px solid var(--forge-border);
+    padding: 14px 20px;
+    font-size: 11px;
+    color: var(--forge);
+    letter-spacing: 0.06em;
+    line-height: 1.6;
+    margin-top: 12px;
+    display: none;
+  }
+
+  .soul-warning.visible { display: block; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo">FORGE</div>
+    <div class="logo-version">V.01</div>
+    <div style="width:1px;height:16px;background:var(--border);margin:0 8px;"></div>
+    <div class="header-tagline">Steal the DNA and make it yours</div>
+  </div>
+  <div class="api-status">
+    <div class="api-dot" id="apiDot"></div>
+    <span id="apiStatusText">API KEY REQUIRED</span>
+  </div>
+</header>
+
+<!-- API SETUP -->
+<div class="api-setup" id="apiSetup">
+  <div class="api-setup-label">CLAUDE API KEY</div>
+  <input type="password" class="api-input" id="apiKeyInput" placeholder="sk-ant-..." />
+  <button class="btn-save-api" onclick="saveApiKey()">SAVE</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- INPUT SECTION -->
+  <div class="section-header">
+    <div class="section-number">00</div>
+    <div class="section-title">INPUT</div>
+    <div class="section-sub">카테고리 + 제품 이미지 필수</div>
+  </div>
+
+  <div class="input-grid">
+    <!-- CATEGORY -->
+    <div class="input-block">
+      <div class="input-label">
+        <div class="input-label-text">CATEGORY</div>
+        <span class="input-badge badge-required">REQUIRED</span>
+      </div>
+      <input type="text" class="input-field" id="categoryInput"
+        placeholder="예: luxury luggage / fragrance / streetwear / electronics" />
+    </div>
+
+    <!-- REFERENCE URL -->
+    <div class="input-block">
+      <div class="input-label">
+        <div class="input-label-text">REFERENCE URL</div>
+        <span class="input-badge badge-optional">OPTIONAL</span>
+        <span style="font-size:9px;color:var(--text-dim);margin-left:auto;">MAX 3개</span>
+      </div>
+      <div class="url-list" id="urlList">
+        <div class="url-row">
+          <input type="text" class="input-field" placeholder="브랜드 캠페인, 에디토리얼, 매거진 등" />
+        </div>
+      </div>
+      <button class="btn-url-add" onclick="addUrlRow()">+ URL 추가</button>
+    </div>
+
+    <!-- PRODUCT IMAGE -->
+    <div class="input-block">
+      <div class="input-label">
+        <div class="input-label-text">PRODUCT IMAGE</div>
+        <span class="input-badge badge-required">REQUIRED</span>
+        <span style="font-size:9px;color:var(--text-dim);margin-left:auto;">MAX 5장</span>
+      </div>
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" accept="image/*" multiple onchange="handleImageUpload(event)" />
+        <div class="upload-icon">⬆</div>
+        <div class="upload-text">다각도 제품 이미지 업로드 (front / side / back)<br><span style="opacity:0.5;font-size:10px;">JPG / PNG / WEBP · 여러 장 선택 가능</span></div>
+      </div>
+      <div class="image-thumbs" id="imageThumbs"></div>
+      <div class="image-count-badge" id="imageCountBadge" style="display:none;"></div>
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div class="input-block">
+      <div class="input-label">
+        <div class="input-label-text">DESCRIPTION</div>
+        <span class="input-badge badge-optional">OPTIONAL</span>
+      </div>
+      <textarea class="input-field" id="descInput" rows="6"
+        placeholder="방향 보정 / 특정 앵글 지시 / 오버라이드&#10;예: 럭셔리하되 젊게, 소재감 강조 / front+side profile 각 1컷 / 모델 손과 함께"></textarea>
+    </div>
+  </div>
+
+  <!-- EXECUTE -->
+  <div class="execute-bar">
+    <div class="execute-info">
+      PHASE 1 — <span>DECODE</span> &nbsp;|&nbsp; Brand DNA 추출 + Subject 묘사 생성
+    </div>
+    <button class="btn-execute" id="decodeBtn" onclick="runDecode()">
+      DECODE <span class="btn-arrow">→</span>
+    </button>
+  </div>
+
+  <!-- PHASE DIVIDER -->
+  <div class="phase-divider" id="phase1Divider" style="display:none;">
+    <div class="phase-line"></div>
+    <div class="phase-label">PHASE 1 — DECODE</div>
+    <div class="phase-line"></div>
+  </div>
+
+  <!-- PHASE 1 OUTPUT -->
+  <div class="phase-block" id="phase1Block">
+    <div class="phase-block-header">
+      <div class="phase-tag">DECODE</div>
+      <div class="phase-block-title">BRAND DNA</div>
+      <div class="phase-block-sub">검토 후 수정 또는 확인</div>
+    </div>
+    <div class="phase-block-body">
+      <div class="loading-bar" id="decodeLoading"></div>
+      <div class="loading-text" id="decodeLoadingText">
+        <span>EXTRACTING BRAND DNA</span>
+      </div>
+      <div class="dna-output" id="dnaOutput"></div>
+      <textarea class="dna-edit-area" id="dnaEditArea"></textarea>
+      <div class="action-row" id="phase1Actions" style="display:none;">
+        <button class="btn-action active" id="refineBtn" onclick="toggleRefine()">✎ REFINE</button>
+        <button class="btn-action primary" onclick="confirmDNA()">CONFIRM →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE DIVIDER 2 -->
+  <div class="phase-divider" id="phase2Divider" style="display:none;">
+    <div class="phase-line"></div>
+    <div class="phase-label">PHASE 2 — FORGE IMAGE</div>
+    <div class="phase-line"></div>
+  </div>
+
+  <!-- PHASE 2 OUTPUT -->
+  <div class="phase-block" id="phase2Block">
+    <div class="phase-block-header">
+      <div class="phase-tag">FORGE IMAGE</div>
+      <div class="phase-block-title">T2I PROMPT GENERATOR</div>
+      <div class="phase-block-sub">필요한 샷만 골라서 실행</div>
+    </div>
+    <div class="phase-block-body">
+
+      <!-- SOUL ID WARNING -->
+      <div class="soul-warning" id="soulWarning">
+        ⚠ 설명에 모델 얼굴이 포함된 경우 → Higgsfield Soul ID 또는 별도 모델 솔루션 필요
+      </div>
+
+      <!-- SHOT BUTTONS -->
+      <div class="shot-buttons" style="margin-top:16px;">
+        <div class="shot-btn-block" id="studioBtn">
+          <div class="shot-btn-label">STUDIO SHOT</div>
+          <div class="shot-btn-count">
+            <span>컷 수</span>
+            <input type="number" class="shot-count-input" id="studioCount" value="4" min="1" max="10" onclick="event.stopPropagation()" />
+            <span>/ MAX 10</span>
+          </div>
+          <button class="shot-execute" onclick="runShotPrompt('studio')">GENERATE →</button>
+        </div>
+        <div class="shot-btn-block" id="lookbookBtn">
+          <div class="shot-btn-label">LOOKBOOK SHOT</div>
+          <div class="shot-btn-count">
+            <span>컷 수</span>
+            <input type="number" class="shot-count-input" id="lookbookCount" value="3" min="1" max="10" onclick="event.stopPropagation()" />
+            <span>/ MAX 10</span>
+          </div>
+          <button class="shot-execute" onclick="runShotPrompt('lookbook')">GENERATE →</button>
+        </div>
+        <div class="shot-btn-block" id="detailBtn">
+          <div class="shot-btn-label">DETAIL SHOT</div>
+          <div class="shot-btn-count">
+            <span>컷 수</span>
+            <input type="number" class="shot-count-input" id="detailCount" value="3" min="1" max="10" onclick="event.stopPropagation()" />
+            <span>/ MAX 10</span>
+          </div>
+          <button class="shot-execute" onclick="runShotPrompt('detail')">GENERATE →</button>
+        </div>
+      </div>
+
+      <!-- PROMPT OUTPUTS -->
+      <div id="studioOutput" class="prompt-output-block">
+        <div class="prompt-output-header">
+          <div class="prompt-output-title">STUDIO SHOT — T2I PROMPTS</div>
+          <div class="prompt-output-actions">
+            <button class="btn-tiny" onclick="runShotPrompt('studio')">↺ REGENERATE</button>
+            <button class="btn-tiny" onclick="copyAllPrompts('studio')">COPY ALL</button>
+          </div>
+        </div>
+        <div class="prompt-output-body" id="studioPrompts"></div>
+      </div>
+
+      <div id="lookbookOutput" class="prompt-output-block">
+        <div class="prompt-output-header">
+          <div class="prompt-output-title">LOOKBOOK SHOT — T2I PROMPTS</div>
+          <div class="prompt-output-actions">
+            <button class="btn-tiny" onclick="runShotPrompt('lookbook')">↺ REGENERATE</button>
+            <button class="btn-tiny" onclick="copyAllPrompts('lookbook')">COPY ALL</button>
+          </div>
+        </div>
+        <div class="prompt-output-body" id="lookbookPrompts"></div>
+      </div>
+
+      <div id="detailOutput" class="prompt-output-block">
+        <div class="prompt-output-header">
+          <div class="prompt-output-title">DETAIL SHOT — T2I PROMPTS</div>
+          <div class="prompt-output-actions">
+            <button class="btn-tiny" onclick="runShotPrompt('detail')">↺ REGENERATE</button>
+            <button class="btn-tiny" onclick="copyAllPrompts('detail')">COPY ALL</button>
+          </div>
+        </div>
+        <div class="prompt-output-body" id="detailPrompts"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PHASE DIVIDER 3 -->
+  <div class="phase-divider" id="phase3Divider" style="display:none;">
+    <div class="phase-line"></div>
+    <div class="phase-label">PHASE 3 — FORGE VIDEO</div>
+    <div class="phase-line"></div>
+  </div>
+
+  <!-- PHASE 3 OUTPUT -->
+  <div class="phase-block" id="phase3Block">
+    <div class="phase-block-header">
+      <div class="phase-tag">FORGE VIDEO</div>
+      <div class="phase-block-title">VIDEO BRIEF — SIGNAL INPUT</div>
+      <div class="phase-block-sub">SHORT-FORM FIRST</div>
+    </div>
+    <div class="phase-block-body">
+      <div class="loading-bar" id="videoLoading"></div>
+      <div class="loading-text" id="videoLoadingText">
+        <span>GENERATING VIDEO BRIEF</span>
+      </div>
+      <div class="brief-output" id="briefOutput"></div>
+
+      <!-- REFINE FOR VIDEO -->
+      <div class="refine-block" id="videoRefineBlock">
+        <textarea class="refine-input" id="videoRefineInput"
+          placeholder="방향 수정 지시&#10;예: 레퍼런스를 유럽 럭셔리 브랜드 느낌으로 바꿔줘 / 좀 더 감성적으로 / 에너지를 더 높게"></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="btn-action primary" onclick="runVideoRefine()">REFINE →</button>
+          <button class="btn-action" onclick="toggleVideoRefine()">CANCEL</button>
+        </div>
+      </div>
+
+      <div class="action-row" id="phase3Actions" style="display:none;">
+        <button class="btn-action" onclick="runVideoGenerate()">↺ REGENERATE</button>
+        <button class="btn-action active" onclick="toggleVideoRefine()">✎ REFINE</button>
+        <button class="btn-action" onclick="copyBrief()">COPY BRIEF</button>
+      </div>
+
+      <div class="signal-hint" id="signalHint" style="display:none;">
+        <div class="signal-hint-icon">→</div>
+        <div class="signal-hint-text">
+          위 브리핑을 <strong>SIGNAL</strong> 텍스트 입력창(03번 트랙)에 붙여넣고 실행하세요.<br>
+          레퍼런스 URL을 직접 찾아서 함께 넣으면 더 정교한 결과물이 나옵니다.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// STATE
+let apiKey = localStorage.getItem('forge_api_key') || '';
+let brandDNA = '';
+let subjectDesc = '';
+let productImages = []; // [{base64, name}]
+let confirmedDNA = '';
+let isRefineMode = false;
+
+// INIT
+window.onload = () => {
+  if (apiKey) {
+    document.getElementById('apiKeyInput').value = apiKey;
+    setApiStatus(true);
+    document.getElementById('apiSetup').style.opacity = '0.5';
+  }
+};
+
+function saveApiKey() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if (!key) return;
+  apiKey = key;
+  localStorage.setItem('forge_api_key', key);
+  setApiStatus(true);
+  document.getElementById('apiSetup').style.opacity = '0.5';
+  showToast('API KEY SAVED');
+}
+
+function setApiStatus(active) {
+  const dot = document.getElementById('apiDot');
+  const text = document.getElementById('apiStatusText');
+  if (active) {
+    dot.classList.add('active');
+    text.textContent = 'CLAUDE CONNECTED';
+  } else {
+    dot.classList.remove('active');
+    text.textContent = 'API KEY REQUIRED';
+  }
+}
+
+// MULTI IMAGE UPLOAD
+function handleImageUpload(event) {
+  const files = Array.from(event.target.files);
+  const remaining = 5 - productImages.length;
+  const toAdd = files.slice(0, remaining);
+
+  toAdd.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = e.target.result.split(',')[1];
+      const mediaType = file.type || 'image/jpeg';
+      productImages.push({ base64, mediaType, name: file.name, src: e.target.result });
+      renderThumbs();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  if (files.length > remaining) showToast(`최대 5장까지 가능합니다`);
+  event.target.value = '';
+}
+
+function removeImage(idx) {
+  productImages.splice(idx, 1);
+  renderThumbs();
+}
+
+function renderThumbs() {
+  const container = document.getElementById('imageThumbs');
+  const badge = document.getElementById('imageCountBadge');
+  container.innerHTML = '';
+
+  productImages.forEach((img, i) => {
+    const thumb = document.createElement('div');
+    thumb.className = 'image-thumb fade-in';
+    thumb.innerHTML = `
+      <img src="${img.src}" />
+      <button class="image-thumb-del" onclick="removeImage(${i})">✕</button>
+    `;
+    container.appendChild(thumb);
+  });
+
+  if (productImages.length > 0) {
+    badge.style.display = 'block';
+    badge.textContent = `${productImages.length}장 업로드됨 — Claude가 모든 각도를 종합 분석합니다`;
+    const zone = document.getElementById('uploadZone');
+    zone.style.borderColor = 'var(--forge-dim)';
+    zone.style.borderStyle = 'solid';
+  } else {
+    badge.style.display = 'none';
+    const zone = document.getElementById('uploadZone');
+    zone.style.borderColor = '';
+    zone.style.borderStyle = '';
+  }
+}
+
+// MULTI URL
+function addUrlRow() {
+  const list = document.getElementById('urlList');
+  if (list.children.length >= 3) { showToast('URL은 최대 3개까지'); return; }
+  const row = document.createElement('div');
+  row.className = 'url-row fade-in';
+  row.innerHTML = `
+    <input type="text" class="input-field" placeholder="브랜드 캠페인, 에디토리얼, 매거진 등" />
+    <button class="btn-url-del" onclick="removeUrlRow(this)">✕</button>
+  `;
+  list.appendChild(row);
+}
+
+function removeUrlRow(btn) {
+  btn.parentElement.remove();
+}
+
+function getUrls() {
+  return Array.from(document.querySelectorAll('#urlList .input-field'))
+    .map(el => el.value.trim())
+    .filter(Boolean);
+}
+
+// DECODE
+async function runDecode() {
+  if (!apiKey) { showToast('API KEY를 먼저 입력하세요'); return; }
+  const category = document.getElementById('categoryInput').value.trim();
+  if (!category) { showToast('CATEGORY를 입력하세요'); return; }
+  if (productImages.length === 0) { showToast('PRODUCT IMAGE를 업로드하세요'); return; }
+
+  const urls = getUrls();
+  const desc = document.getElementById('descInput').value.trim();
+
+  // show phase 1
+  document.getElementById('phase1Divider').style.display = 'flex';
+  document.getElementById('phase1Block').classList.add('visible');
+  document.getElementById('decodeLoading').classList.add('visible');
+  document.getElementById('decodeLoadingText').classList.add('visible');
+  document.getElementById('dnaOutput').textContent = '';
+  document.getElementById('phase1Actions').style.display = 'none';
+  document.getElementById('decodeBtn').disabled = true;
+
+  const urlContent = urls.length > 0
+    ? `\n\nREFERENCE URLS (${urls.length}개):\n${urls.map((u,i) => `${i+1}. ${u}`).join('\n')}`
+    : '';
+  const descContent = desc ? `\n\nADDITIONAL DIRECTION: ${desc}` : '';
+  const imageNote = productImages.length > 1
+    ? `\n\n${productImages.length}장의 제품 이미지가 제공됩니다. 모든 각도를 종합하여 정밀한 Subject Description을 작성하세요.`
+    : '';
+
+  const systemPrompt = `You are FORGE, a brand DNA extraction engine for an AI Creative Director.
+
+Your task: Analyze the provided product image(s) and any reference URLs/description, then extract a precise Brand DNA profile and Subject Description.
+
+If multiple product images are provided, synthesize all angles to create the most accurate and complete Subject Description possible.
+If multiple reference URLs are provided, find the common DNA across all sources.
+
+Output format — strictly follow this structure in Korean (except Subject Description which must be in English):
+
+BRAND DNA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+비주얼 톤: [describe the visual tone]
+라이팅: [lighting style and quality]
+배경: [background and environment]
+컬러 팔레트: [color palette description]
+카피 톤: [copy/messaging tone]
+타겟 페르소나: [target persona description]
+콘텐츠 패턴: [content patterns observed]
+핵심 가치: [core brand values]
+
+SUBJECT DESCRIPTION (English only — for T2I prompts)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[Precise English description synthesized from all provided product angles. Cover: product type, overall silhouette, material/texture, color(s), key design details, hardware/accents, finish quality. Be specific enough that an AI image generator can reproduce the product accurately.]
+
+Be precise, visual, and production-ready. No vague adjectives. Think like a creative director who will immediately use this to brief a production team.`;
+
+  // Build content array — all images first, then text
+  const userContent = productImages.map(img => ({
+    type: "image",
+    source: { type: "base64", media_type: img.mediaType, data: img.base64 }
+  }));
+
+  userContent.push({
+    type: "text",
+    text: `CATEGORY: ${category}${imageNote}${urlContent}${descContent}\n\nExtract the Brand DNA and Subject Description based on the above inputs. If reference URLs are provided, incorporate those brands' visual language. If not, use your knowledge of the category to establish appropriate DNA.`
+  });
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 2000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userContent }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content[0].text;
+
+    brandDNA = text;
+
+    // extract subject desc
+    const subjectMatch = text.match(/SUBJECT DESCRIPTION[^\n]*\n[━\-]+\n([\s\S]+?)(?:\n\n|$)/);
+    if (subjectMatch) subjectDesc = subjectMatch[1].trim();
+
+    document.getElementById('decodeLoading').classList.remove('visible');
+    document.getElementById('decodeLoadingText').classList.remove('visible');
+    document.getElementById('dnaOutput').textContent = text;
+    document.getElementById('dnaOutput').classList.add('fade-in');
+    document.getElementById('phase1Actions').style.display = 'flex';
+
+    // check for soul id warning
+    const descLower = desc.toLowerCase();
+    if (descLower.includes('모델') || descLower.includes('얼굴') || descLower.includes('model') || descLower.includes('face')) {
+      document.getElementById('soulWarning').classList.add('visible');
+    }
+
+  } catch (err) {
+    document.getElementById('decodeLoading').classList.remove('visible');
+    document.getElementById('decodeLoadingText').classList.remove('visible');
+    document.getElementById('dnaOutput').textContent = 'ERROR: ' + err.message;
+    showToast('API 오류가 발생했습니다');
+  }
+
+  document.getElementById('decodeBtn').disabled = false;
+}
+
+// REFINE TOGGLE
+function toggleRefine() {
+  const editArea = document.getElementById('dnaEditArea');
+  const output = document.getElementById('dnaOutput');
+  const btn = document.getElementById('refineBtn');
+
+  isRefineMode = !isRefineMode;
+  if (isRefineMode) {
+    editArea.value = brandDNA;
+    editArea.classList.add('visible');
+    output.style.display = 'none';
+    btn.textContent = '✓ DONE';
+  } else {
+    brandDNA = editArea.value;
+    editArea.classList.remove('visible');
+    output.style.display = 'block';
+    output.textContent = brandDNA;
+    btn.textContent = '✎ REFINE';
+  }
+}
+
+// CONFIRM DNA
+function confirmDNA() {
+  if (isRefineMode) {
+    brandDNA = document.getElementById('dnaEditArea').value;
+    document.getElementById('dnaEditArea').classList.remove('visible');
+    document.getElementById('dnaOutput').style.display = 'block';
+    document.getElementById('dnaOutput').textContent = brandDNA;
+    isRefineMode = false;
+    document.getElementById('refineBtn').textContent = '✎ REFINE';
+  }
+  confirmedDNA = brandDNA;
+
+  // show phase 2 & 3
+  document.getElementById('phase2Divider').style.display = 'flex';
+  document.getElementById('phase2Block').classList.add('visible');
+  document.getElementById('phase2Block').classList.add('fade-in');
+  document.getElementById('phase3Divider').style.display = 'flex';
+  document.getElementById('phase3Block').classList.add('visible');
+  document.getElementById('phase3Block').classList.add('fade-in');
+
+  // auto run video brief
+  runVideoGenerate();
+
+  showToast('DNA CONFIRMED — PHASE 2 & 3 ACTIVATED');
+
+  setTimeout(() => {
+    document.getElementById('phase2Block').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 300);
+}
+
+// SHOT PROMPT GENERATION
+async function runShotPrompt(type) {
+  if (!confirmedDNA) { showToast('PHASE 1을 먼저 완료하세요'); return; }
+
+  const countId = type + 'Count';
+  const count = parseInt(document.getElementById(countId).value) || 4;
+  const category = document.getElementById('categoryInput').value.trim();
+  const desc = document.getElementById('descInput').value.trim();
+
+  const outputBlock = document.getElementById(type + 'Output');
+  const promptsContainer = document.getElementById(type + 'Prompts');
+
+  outputBlock.classList.add('visible');
+  promptsContainer.innerHTML = '<div style="color:var(--text-dim);font-size:11px;padding:8px 0;">GENERATING PROMPTS...</div>';
+
+  const shotTypeMap = {
+    studio: 'studio product shots (clean background, controlled lighting)',
+    lookbook: 'lifestyle/lookbook shots (real environment, atmospheric)',
+    detail: 'detail/close-up shots (texture, material, craftsmanship)'
+  };
+
+  const systemPrompt = `You are FORGE, a T2I prompt engineer for an AI Creative Director.
+
+Generate ${count} distinct T2I prompts for ${shotTypeMap[type]}.
+
+RULES:
+1. Every prompt starts with: "the ${category.split(' ')[0]} from the attached image"
+2. Prompts are in English only — they will be used directly in AI image generation tools (Freepik, Higgsfield)
+3. Each prompt must be specific, visual, and production-ready
+4. Vary angles, lighting setups, and compositions across the ${count} prompts
+5. Base all creative decisions on the Brand DNA provided
+6. End each prompt with: "hyperrealistic product photography, 4K"
+7. No vague adjectives — use precise visual/technical language
+
+Additional direction: ${desc || 'none'}
+
+Output format — exactly this structure for each prompt:
+[SHOT 01]
+SCENE: [one line scene description in Korean]
+PROMPT: [full English T2I prompt]
+
+[SHOT 02]
+...`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 3000,
+        system: systemPrompt,
+        messages: [{
+          role: 'user',
+          content: `BRAND DNA:\n${confirmedDNA}\n\nCATEGORY: ${category}\n\nGenerate ${count} ${type} shot T2I prompts.`
+        }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content[0].text;
+
+    // parse shots
+    const shots = text.split(/\[SHOT \d+\]/).filter(s => s.trim());
+    promptsContainer.innerHTML = '';
+
+    shots.forEach((shot, i) => {
+      const sceneMatch = shot.match(/SCENE:\s*(.+)/);
+      const promptMatch = shot.match(/PROMPT:\s*([\s\S]+?)(?=\n\n|$)/);
+      const scene = sceneMatch ? sceneMatch[1].trim() : '';
+      const prompt = promptMatch ? promptMatch[1].trim() : shot.trim();
+
+      const item = document.createElement('div');
+      item.className = 'prompt-item fade-in';
+      item.innerHTML = `
+        <div class="prompt-num">0${i+1}</div>
+        <div class="prompt-content">
+          ${scene ? `<div class="prompt-label">${scene}</div>` : ''}
+          <div class="prompt-text">${prompt}</div>
+        </div>
+        <button class="btn-copy-prompt" onclick="copyText('${prompt.replace(/'/g, "\\'")}')">COPY</button>
+      `;
+      promptsContainer.appendChild(item);
+    });
+
+  } catch (err) {
+    promptsContainer.innerHTML = '<div style="color:var(--forge);font-size:11px;">ERROR: ' + err.message + '</div>';
+  }
+}
+
+// VIDEO BRIEF GENERATION
+async function runVideoGenerate() {
+  if (!confirmedDNA) return;
+
+  const category = document.getElementById('categoryInput').value.trim();
+  const desc = document.getElementById('descInput').value.trim();
+  const briefOutput = document.getElementById('briefOutput');
+  const loading = document.getElementById('videoLoading');
+  const loadingText = document.getElementById('videoLoadingText');
+
+  loading.classList.add('visible');
+  loadingText.classList.add('visible');
+  briefOutput.textContent = '';
+  document.getElementById('phase3Actions').style.display = 'none';
+  document.getElementById('signalHint').style.display = 'none';
+
+  const systemPrompt = `You are FORGE, a video creative brief writer for an AI Creative Director.
+
+Generate a SHORT-FORM video brief that will be used as text input for SIGNAL (a storyboard generation tool).
+
+CRITICAL RULES FOR THE BRIEF:
+1. SHORT-FORM FIRST — All briefs optimized for Instagram Reels / TikTok
+2. Length: under 15 seconds preferred, 30 seconds maximum
+3. FIRST 3 SECONDS MUST BE DESIGNED — specify exactly what happens in the hook
+4. Use PHYSICAL, CINEMATIC language — not vague adjectives. Think: lighting setups, camera movements, edit rhythm, sound design
+5. NO abstract fluff — "luxurious" is banned. Say "single side-lit natural light, hard shadow edge on matte surface" instead
+6. Reference must be SPECIFIC — not "Nike ad" but "Nike Find Your Greatness series — ordinary athlete + single-take structure"
+7. Brand DNA must flow consistently through every creative decision
+8. Write so that SIGNAL (which analyzes: HOOK, PACING, VISUAL TONE, CAMERA, STANDOUT, STRUCTURAL) gets maximum signal from your text
+
+Output format — write in Korean mixed with key English technical terms:
+
+SHORT-FORM FIRST. 3초 안에 잡아야 한다.
+
+[CONCEPT]
+[핵심 서사 — 2-3줄]
+
+[HOOK — 첫 3초]
+[정확히 무슨 일이 일어나는가]
+
+[VISUAL DIRECTION]
+[라이팅 / 카메라 / 편집 리듬 — 물리적 언어로]
+
+[TONE]
+[분위기 — 구체적으로]
+
+[참고 레퍼런스 — 직접 찾아보세요]
+- [구체적 레퍼런스 1: 브랜드 + 시리즈명 + 핵심 문법]
+- [구체적 레퍼런스 2]
+※ 최신 레퍼런스는 직접 확인 후 사용하세요.
+
+[LENGTH] [시간]
+[CUTS] [컷 수] 이내
+[PLATFORM] Instagram Reels / TikTok
+
+→ 이 브리핑을 SIGNAL 텍스트 입력창에 붙여넣으세요.`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1500,
+        system: systemPrompt,
+        messages: [{
+          role: 'user',
+          content: `BRAND DNA:\n${confirmedDNA}\n\nCATEGORY: ${category}\nADDITIONAL DIRECTION: ${desc || 'none'}\n\nGenerate a short-form video brief for SIGNAL.`
+        }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content[0].text;
+
+    loading.classList.remove('visible');
+    loadingText.classList.remove('visible');
+    briefOutput.textContent = text;
+    briefOutput.classList.add('fade-in');
+    document.getElementById('phase3Actions').style.display = 'flex';
+    document.getElementById('signalHint').style.display = 'flex';
+
+  } catch (err) {
+    loading.classList.remove('visible');
+    loadingText.classList.remove('visible');
+    briefOutput.textContent = 'ERROR: ' + err.message;
+  }
+}
+
+// VIDEO REFINE
+function toggleVideoRefine() {
+  const block = document.getElementById('videoRefineBlock');
+  block.classList.toggle('visible');
+}
+
+async function runVideoRefine() {
+  const refineInput = document.getElementById('videoRefineInput').value.trim();
+  if (!refineInput) { showToast('수정 지시를 입력하세요'); return; }
+
+  const currentBrief = document.getElementById('briefOutput').textContent;
+  const category = document.getElementById('categoryInput').value.trim();
+
+  document.getElementById('videoRefineBlock').classList.remove('visible');
+  document.getElementById('videoLoading').classList.add('visible');
+  document.getElementById('videoLoadingText').classList.add('visible');
+  document.getElementById('briefOutput').textContent = '';
+  document.getElementById('phase3Actions').style.display = 'none';
+  document.getElementById('signalHint').style.display = 'none';
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1500,
+        messages: [{
+          role: 'user',
+          content: `CURRENT VIDEO BRIEF:\n${currentBrief}\n\nBRAND DNA:\n${confirmedDNA}\n\nCATEGORY: ${category}\n\nREFINE INSTRUCTION: ${refineInput}\n\nRewrite the video brief applying the refinement instruction. Keep the same format structure. SHORT-FORM FIRST principle must be maintained.`
+        }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content[0].text;
+
+    document.getElementById('videoLoading').classList.remove('visible');
+    document.getElementById('videoLoadingText').classList.remove('visible');
+    document.getElementById('briefOutput').textContent = text;
+    document.getElementById('briefOutput').classList.add('fade-in');
+    document.getElementById('phase3Actions').style.display = 'flex';
+    document.getElementById('signalHint').style.display = 'flex';
+    document.getElementById('videoRefineInput').value = '';
+
+  } catch (err) {
+    document.getElementById('videoLoading').classList.remove('visible');
+    document.getElementById('videoLoadingText').classList.remove('visible');
+    document.getElementById('briefOutput').textContent = 'ERROR: ' + err.message;
+  }
+}
+
+// COPY UTILS
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => showToast('COPIED'));
+}
+
+function copyBrief() {
+  const brief = document.getElementById('briefOutput').textContent;
+  navigator.clipboard.writeText(brief).then(() => showToast('BRIEF COPIED'));
+}
+
+function copyAllPrompts(type) {
+  const items = document.querySelectorAll(`#${type}Prompts .prompt-text`);
+  const all = Array.from(items).map((el, i) => `[SHOT 0${i+1}]\n${el.textContent}`).join('\n\n');
+  navigator.clipboard.writeText(all).then(() => showToast('ALL PROMPTS COPIED'));
+}
+
+// TOAST
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+</script>
+</body>
+</html>
